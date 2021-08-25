@@ -9,16 +9,42 @@
          <div class="card-body">
             <p class="card-text">内容：{{ $post->body }}</p>
             <p>投稿日時：{{ $post->created_at }}</p>
-            <a href="{{ route('posts.edit', $post->id) }}" class="btn btn-primary">編集する</a>
-            <form action="{{ route('posts.destroy', $post->id) }}" method='post'>
-               {{ csrf_field() }}
-               {{ method_field('DELETE') }}
-               <input type='submit' value='削除' class="btn btn-danger" onclick='return confirm("削除しますか？？");'>
-            </form>
+            @isset($mypost)
+               <a href="{{ route('posts.edit', $post->id) }}" class="btn btn-primary">編集する</a>
+               <form action="{{ route('posts.destroy', $post->id) }}" method='post'>
+                  {{ csrf_field() }}
+                  {{ method_field('DELETE') }}
+                  <input type='submit' value='削除' class="btn btn-danger" onclick='return confirm("削除しますか？？");'>
+               </form>
+            @endisset
          </div>
       </div>
    </div>
    <div class="row justify-content-center">
+      <p>いいねした人リスト</p>
+   </div>   
+   <div class="row justify-content-center">
+      <table class="">
+         <tr><th width="50">id</th><th>名前</th></tr>
+            @foreach($postUnique as $user)
+               <tr>
+                  <td width="50">{{$user->id}}</td>
+                  <td width="120">{{$user->name}}</td>
+                  @isset($mypost)
+                     <td>
+                        <form action="{{ route('matching', $post) }}" method="POST">
+                        {{csrf_field()}}
+                           <input type="submit" value="&#xf164;いいね" class="fas btn btn-success">
+                           <input type="hidden" value="{{$user->id}}" name="user_id">
+                           <input type="hidden" value="{{$post->id}}" name="post_id">
+                        </form>
+                     </td>
+                  @endisset
+               </tr>
+            @endforeach
+      </table>
+   </div>
+   <!-- <div class="row justify-content-center">
       <div class="col-md-8">
          <form action="{{ route('comments.store') }}" method="POST">
          {{csrf_field()}}
@@ -34,8 +60,8 @@
    </div>
    <div class="row justify-content-center">
       <div class="col-md-8">
-         @foreach ($post->comments as $comment) <!-- $post（特定の投稿）に紐づいた複数あるcommentsで回している -->
-         <div class="card mt-3">
+         @foreach ($post->comments as $comment) $post（特定の投稿）に紐づいた複数あるcommentsで回している -->
+         <!-- <div class="card mt-3">
             <h5 class="card-header">投稿者：{{ $comment->user->name }}</h5>
             <div class="card-body">
                <h5 class="card-title">投稿日時：{{ $comment->created_at }}</h5>
@@ -44,6 +70,6 @@
          </div>
          @endforeach
       </div>
-   </div>
+   </div> -->
 </div>
 @endsection

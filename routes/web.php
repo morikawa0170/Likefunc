@@ -21,6 +21,7 @@ Route::resource('posts', 'PostController');
 Route::resource('comments', 'CommentController');
 Route::post('posts/{post}/favorites', 'FavoriteController@store')->name('favorites');
 Route::post('posts/{post}/unfavorites', 'FavoriteController@destroy')->name('unfavorites');
+Route::post('posts/{post}/matching', 'FavoriteController@matching')->name('matching');
 
 Auth::routes();
 

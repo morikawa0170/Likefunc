@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Post;
 use Auth;
 
@@ -30,6 +31,14 @@ class FavoriteController extends Controller
     public function destroy(Post $post)
     {
         $post->users()->detach(Auth::id());
+
+        return redirect()->route('posts.index');
+    }
+    
+    //いいねをしてくれた人にいいねを返す
+    public function matching(Request $request, Post $post)
+    {
+        $post->users()->attach($request->user_id);
 
         return redirect()->route('posts.index');
     }

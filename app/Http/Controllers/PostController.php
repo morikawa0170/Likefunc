@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\PostRequest;
+use Illuminate\Support\Facades\DB;
 use App\Post; //このcontrollerでPostモデルを使う
+use App\User;
 use Auth; 
 
 class PostController extends Controller
@@ -60,11 +62,21 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id) //$id == post_id
     {
+        $mypost = null;
+        //post_idと$idが一致しているものを取得
         $post = Post::find($id);
-
-        return view('posts.show', compact('post'));
+        $postUnique = $post->users->unique();
+        if(Auth::id()==$post->user_id){
+            $mypost = true;
+        }
+        
+        return view('posts.show', [
+            'post' => $post,
+            'mypost' => $mypost,
+            'postUnique' => $postUnique
+        ]);
     }
 
     /**
