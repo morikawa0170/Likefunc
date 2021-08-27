@@ -62,8 +62,9 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id) //$id == post_id
+    public function show($id, Request $request) //$id == post_id
     {
+        // dd($request);
         $mypost = null;
         //post_idと$idが一致しているものを取得
         $post = Post::find($id);
@@ -71,11 +72,25 @@ class PostController extends Controller
         if(Auth::id()==$post->user_id){
             $mypost = true;
         }
+        // echo $post->users;
+        // where('user_id')->count();
+        //user_idとpost_idが同じ値のフィールドのレコードが2つある場合
+        foreach($post->users as $item){
+            $count = $item->pivot->groupby('user_id')->count();
+            echo $item->id . $item->name.'<br>';
+        }
         
+        if($count == 2){
+            echo "success!";
+        }
+        // // echo $item->pivot->count();
+        // echo $item->pivot->groupby('user_id')->count();
+
         return view('posts.show', [
             'post' => $post,
             'mypost' => $mypost,
-            'postUnique' => $postUnique
+            'postUnique' => $postUnique,
+            'count' => $count
         ]);
     }
 

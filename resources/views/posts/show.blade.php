@@ -22,10 +22,11 @@
    </div>
    <div class="row justify-content-center">
       <p>いいねした人リスト</p>
-   </div>   
+   </div>
    <div class="row justify-content-center">
       <table class="">
          <tr><th width="50">id</th><th>名前</th></tr>
+
             @foreach($postUnique as $user)
                <tr>
                   <td width="50">{{$user->id}}</td>
@@ -34,12 +35,16 @@
                      <td>
                         <form action="{{ route('matching', $post) }}" method="POST">
                         {{csrf_field()}}
-                           <input type="submit" value="&#xf164;いいね" class="fas btn btn-success">
+                           <input type="submit" value="&#xf164; いいね" class="fas btn btn-success">
                            <input type="hidden" value="{{$user->id}}" name="user_id">
                            <input type="hidden" value="{{$post->id}}" name="post_id">
                         </form>
-                     </td>
+                        @if($count == 2)
+                           <p>{{ $user->email }}</p>
+                        @endif
+                     </td> 
                   @endisset
+                  
                </tr>
             @endforeach
       </table>

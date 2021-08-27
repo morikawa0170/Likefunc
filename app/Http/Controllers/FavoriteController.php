@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Post;
+use App\User;
 use Auth;
 
 class FavoriteController extends Controller
@@ -39,7 +40,9 @@ class FavoriteController extends Controller
     public function matching(Request $request, Post $post)
     {
         $post->users()->attach($request->user_id);
-
+        $email = User::find($request->user_id);
+        // dd($email->email);
         return redirect()->route('posts.index');
+        // return redirect("posts/$request->post_id")->with('email', $email);
     }
 }
