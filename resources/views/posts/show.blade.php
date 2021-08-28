@@ -20,14 +20,30 @@
          </div>
       </div>
    </div>
-   <div class="row justify-content-center">
-      <p>いいねした人リスト</p>
-   </div>
-   <div class="row justify-content-center">
-      <table class="">
-         <tr><th width="50">id</th><th>名前</th></tr>
-
-            @foreach($postUnique as $user)
+   @if(isset($matching))
+      <div class="row justify-content-center">
+         <p class="">マッチング成立！！</p>
+      </div>
+      <div class="row justify-content-center">
+         <table class="">
+            <tr><th width="50">id</th><th>名前</th></tr>
+            <tr>
+               <td width="50">{{$matching->id}}</td>
+               <td width="120">{{$matching->name}}</td>
+               @isset($mypost)
+                  <td width="120">{{$matching->email}}</td>
+               @endisset
+            </tr>
+         </table>
+      </div>   
+   @else
+      <div class="row justify-content-center">
+         <p>いいねした人リスト</p>
+      </div>
+      <div class="row justify-content-center">
+         <table class="">
+            <tr><th width="50">id</th><th>名前</th></tr>
+            @foreach($post->users as $user)
                <tr>
                   <td width="50">{{$user->id}}</td>
                   <td width="120">{{$user->name}}</td>
@@ -39,16 +55,14 @@
                            <input type="hidden" value="{{$user->id}}" name="user_id">
                            <input type="hidden" value="{{$post->id}}" name="post_id">
                         </form>
-                        @if($count == 2)
-                           <p>{{ $user->email }}</p>
-                        @endif
                      </td> 
                   @endisset
-                  
                </tr>
             @endforeach
-      </table>
-   </div>
+         </table>
+      </div>   
+   @endif
+   
    <!-- <div class="row justify-content-center">
       <div class="col-md-8">
          <form action="{{ route('comments.store') }}" method="POST">

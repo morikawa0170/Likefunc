@@ -64,33 +64,36 @@ class PostController extends Controller
      */
     public function show($id, Request $request) //$id == post_id
     {
-        // dd($request);
         $mypost = null;
-        //post_idと$idが一致しているものを取得
+        $match_user_id = null;
+        $matching = null;
+        
         $post = Post::find($id);
-        $postUnique = $post->users->unique();
+        //post_idと$idが一致しているものを取得
         if(Auth::id()==$post->user_id){
             $mypost = true;
         }
-        // echo $post->users;
-        // where('user_id')->count();
-        //user_idとpost_idが同じ値のフィールドのレコードが2つある場合
-        foreach($post->users as $item){
-            $count = $item->pivot->groupby('user_id')->count();
-            echo $item->id . $item->name.'<br>';
-        }
+
+        //post_idが$idと同じレコードの中で、user_idが2つあるものを取得
+        $count = DB::select("select * from post_user
+                        where post_id = $id
+                        group by user_id
+                        having count(*)>1");
+
         
-        if($count == 2){
-            echo "success!";
+        if(isset($count)){
+            foreach($count as $item){
+                //重複しているuser_idを取得
+                $match_user_id = $item->user_id;
+            }
+            $matching = User::find($match_user_id);
         }
-        // // echo $item->pivot->count();
-        // echo $item->pivot->groupby('user_id')->count();
 
         return view('posts.show', [
             'post' => $post,
             'mypost' => $mypost,
-            'postUnique' => $postUnique,
-            'count' => $count
+            'count' => $count,
+            'matching' => $matching
         ]);
     }
 
